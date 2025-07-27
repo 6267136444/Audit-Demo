@@ -1,41 +1,54 @@
-name: Deploy AKS with Terraform
+name: Terraform Deployment
 
 on:
   push:
     branches:
       - main
-
-permissions:
-  id-token: write
-  contents: read
+  pull_request:
 
 jobs:
   terraform:
+    name: Terraform Apply
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.5.7
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7
 
-    - name: Terraform Init
-      run: terraform init
+      - name: Terraform Init
+        run: terraform init
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-    - name: Terraform Validate
-      run: terraform validate
+      - name: Terraform Validate
+        run: terraform validate
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-    - name: Terraform Plan
-      run: terraform plan -input=false
+      - name: Terraform Plan
+        run: terraform plan -input=false -out=tfplan
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-    - name: Terraform Apply
-      run: terraform apply -input=false -auto-approve
-
-    env:
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      # Optional: uncomment below if you want to auto-apply
+      # - name: Terraform Apply
+      #   run: terraform apply -input=false tfplan
+      #   env:
+      #     ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      #     ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      #     ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      #     ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
