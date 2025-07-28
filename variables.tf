@@ -26,5 +26,5 @@ variable "node_count" {
 
 variable "vm_size" {
   type        = string
-  default     = "Standard_DS2_v2"
+  default     = "standard_d2_v4"
 }
