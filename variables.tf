@@ -28,15 +28,6 @@ variable "vm_size" {
   type        = string
   default     = "Standard_DS2_v2"
 }
-variable "tenant_id" {
-  type        = string
-  description = "Azure Tenant ID"
-}
-
-variable "subscription_id" {
-  type        = string
-  description = "Azure Subscription ID"
-}
 
 variable "client_id" {
   type        = string
