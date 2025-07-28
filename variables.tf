@@ -28,8 +28,3 @@ variable "vm_size" {
   type        = string
   default     = "Standard_DS2_v2"
 }
-
-variable "client_id" {
-  type        = string
-  description = "Azure Client ID used for OIDC auth"
-}
